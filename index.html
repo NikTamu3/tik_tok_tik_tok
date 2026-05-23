@@ -8,6 +8,7 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
   <style>
+
     body {
       background: linear-gradient(to bottom right, #fff0f5, #ffe4e1);
       font-family: 'Segoe UI', sans-serif;
@@ -15,7 +16,7 @@
     }
 
     .polaroid {
-      width: 200px;
+      width: 220px;
       background: white;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       padding: 10px;
@@ -64,6 +65,7 @@
         opacity: 0;
       }
     }
+
   </style>
 </head>
 
@@ -97,19 +99,17 @@
 
   </div>
 
-  <!-- Main Content -->
+  <!-- Main Section -->
   <div id="mainSection" class="hidden">
 
-    <!-- Time + Countdown -->
+    <!-- Live Time + Countdown -->
     <div class="text-center mb-8">
 
-      <!-- Live Time -->
       <div
         id="liveTime"
         class="mb-4 text-pink-700 text-xl font-bold"
       ></div>
 
-      <!-- Countdown -->
       <div id="countdown"></div>
 
     </div>
@@ -163,7 +163,7 @@
     const start = new Date(2026, 4, 20); // May 20 2026
     const end = new Date(2026, 5, 20);   // June 20 2026
 
-    // UNLOCK WEBSITE
+    // UNLOCK FUNCTION
     function unlock() {
 
       const input = document.getElementById("bday").value;
@@ -208,6 +208,7 @@
 
         liveTimeEl.innerHTML =
           `🕒 ${now.toLocaleString("en-IN", options)}`;
+
       }
 
       updateTime();
@@ -215,7 +216,7 @@
       setInterval(updateTime, 1000);
     }
 
-    // COUNTDOWN TIMER
+    // COUNTDOWN
     function showCountdown() {
 
       const countdownEl = document.getElementById("countdown");
@@ -313,7 +314,7 @@
       setInterval(updateCountdown, 1000);
     }
 
-    // DAILY PHOTO CARDS
+    // RENDER CALENDAR
     function renderCalendar() {
 
       const calendar = document.getElementById("calendar");
@@ -352,22 +353,44 @@
 
         card.appendChild(label);
 
-        // UNLOCKED DAYS
+        // UNLOCKED DAY
         if (dayDate <= today) {
 
           // IMAGE
           const img = document.createElement("img");
 
-          // TRY JPG FIRST
-          img.src = `./img/day${i + 1}.jpg`;
+          const extensions = [
+            "jpg",
+            "jpeg",
+            "JPG",
+            "JPEG"
+          ];
 
-          // IF JPG FAILS -> TRY JPEG
-          img.onerror = function () {
+          let extIndex = 0;
 
-            this.onerror = null;
+          function tryNextImage() {
 
-            this.src = `./img/day${i + 1}.jpeg`;
-          };
+            if (extIndex >= extensions.length) {
+
+              console.log(
+                `Image not found for day ${i + 1}`
+              );
+
+              img.src =
+                "https://via.placeholder.com/300x300?text=No+Image";
+
+              return;
+            }
+
+            img.src =
+              `./img/day${i + 1}.${extensions[extIndex]}`;
+
+            extIndex++;
+          }
+
+          img.onerror = tryNextImage;
+
+          tryNextImage();
 
           img.alt = `Photo day ${i + 1}`;
 
